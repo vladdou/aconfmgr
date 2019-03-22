@@ -21,6 +21,8 @@ ANSI_color_C="[1;36m"
 ANSI_color_W="[1;39m"
 ANSI_reset="[0m"
 
+diff_opts=(diff '--color=auto')
+
 verbose=0
 lint_config=false
 declare -i config_warnings=0

@@ -10,7 +10,6 @@ pacaur_opts=(pacaur)
 yaourt_opts=(yaourt)
 yay_opts=(yay)
 makepkg_opts=(makepkg)
-diff_opts=(diff '--color=auto')
 
 aur_helper=
 aur_helpers=(aurman pacaur yaourt yay makepkg)
