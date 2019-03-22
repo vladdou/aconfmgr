@@ -732,7 +732,7 @@ function AconfNeedProgram() {
 	then
 		LogEnter 'Installing dependency %s using %s:\n' "$(Color M %q "$package")" "$source"
 		ParanoidConfirm ''
-		"$source"_InstallPackage --asdeps "$package"
+		"$source"_InstallPackages --asdeps "$package"
 		LogLeave 'Installed.\n'
 	fi
 }
