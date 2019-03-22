@@ -109,6 +109,8 @@ test_globals_whitelist=(
 	ignored_dirs
 
 	# Internal state (misc.)
+	distro
+	package_sources
 	aur_helpers
 	base_devel_installed
 	lint_config

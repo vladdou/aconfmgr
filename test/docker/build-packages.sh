@@ -17,6 +17,7 @@ export LC_COLLATE=C
 
 tmp_dir=/tmp/aconfmgr-setup
 source ../../src/common.bash
+source ../../src/distros/arch.bash
 
 pacman_opts+=(--noconfirm)
 
