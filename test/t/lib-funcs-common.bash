@@ -129,7 +129,7 @@ test_globals_whitelist=(
 
 	# Zero-terminated strings
 	z_supported
-	z_delim
+	z_d_delim
 	z_print0
 	z_zero_terminated
 	z_printarray

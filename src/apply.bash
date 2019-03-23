@@ -110,10 +110,10 @@ function AconfApply() {
 	}
 
 	local file
-	comm -12 --zero-terminated \
-		 <(  Print0Array priority_files                                 | sort --zero-terminated ) \
-		 <( (Print0Array config_only_files ; Print0Array changed_files) | sort --zero-terminated ) | \
-		while read -r -d $'\0' file
+	comm -12 $z_zero_terminated \
+		 <(  $z_printarray priority_files                                   | sort $z_zero_terminated ) \
+		 <( ($z_printarray config_only_files ; $z_printarray changed_files) | sort $z_zero_terminated ) | \
+		while read -r "${z_d_delim[@]}" file
 		do
 			LogEnter 'Installing %s...\n' "$(Color C %q "$file")"
 
@@ -128,8 +128,8 @@ function AconfApply() {
 			LogLeave
 			modified=y
 		done
-	comm -23 --zero-terminated <(Print0Array config_only_files | sort --zero-terminated) <(Print0Array priority_files | sort --zero-terminated) | mapfile -d $'\0' config_only_files
-	comm -23 --zero-terminated <(Print0Array changed_files     | sort --zero-terminated) <(Print0Array priority_files | sort --zero-terminated) | mapfile -d $'\0' changed_files
+	comm -23 $z_zero_terminated <($z_printarray config_only_files | sort $z_zero_terminated) <($z_printarray priority_files | sort $z_zero_terminated) | mapfile "${z_d_delim[@]}" config_only_files
+	comm -23 $z_zero_terminated <($z_printarray changed_files     | sort $z_zero_terminated) <($z_printarray priority_files | sort $z_zero_terminated) | mapfile "${z_d_delim[@]}" changed_files
 
 	LogLeave # Installing priority files
 
@@ -322,7 +322,7 @@ function AconfApply() {
 
 		local system_only_lost_files=0
 		comm -13 $z_zero_terminated "$tmp_dir"/managed-files-0 <($z_printarray system_only_files) | \
-			while read -r -d "$z_delim" file
+			while read -r "${z_d_delim[@]}"  file
 			do
 				files_to_delete+=("$file")
 				system_only_lost_files=$((system_only_lost_files+1))
@@ -334,7 +334,7 @@ function AconfApply() {
 		LogEnter 'Filtering system-only managed files...\n'
 		local system_only_managed_files=0
 		comm -12 $z_zero_terminated "$tmp_dir"/managed-files-0 <($z_printarray system_only_files) | \
-			while read -r -d "$z_delim" file
+			while read -r "${z_d_delim[@]}"  file
 			do
 				files_to_restore+=("$file")
 				system_only_managed_files=$((system_only_managed_files+1))
@@ -379,7 +379,7 @@ function AconfApply() {
 	if [[ ${#files_to_delete[@]} != 0 ]]
 	then
 		LogEnter 'Deleting %s files.\n' "$(Color G ${#files_to_delete[@]})"
-		printf '%s\0' "${files_to_delete[@]}" | sort --zero-terminated | mapfile -d $'\0' files_to_delete
+		$z_printarray files_to_delete | sort $z_zero_terminated | mapfile -t "${z_d_delim[@]}" files_to_delete
 
 		# shellcheck disable=2059
 		function Details() {
@@ -430,7 +430,7 @@ function AconfApply() {
 	if [[ ${#files_to_restore[@]} != 0 ]]
 	then
 		LogEnter 'Restoring %s files.\n' "$(Color G ${#files_to_restore[@]})"
-		printf '%s\0' "${files_to_restore[@]}" | sort --zero-terminated | mapfile -d $'\0' files_to_restore
+		$z_printarray files_to_restore | sort $z_zero_terminated | mapfile -t "${z_d_delim[@]}" files_to_restore
 
 		# shellcheck disable=2059
 		function Details() {

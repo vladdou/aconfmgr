@@ -30,14 +30,14 @@ declare -i config_warnings=0
 if cut --help | grep -q -- --zero-terminated
 then
 	z_supported=true
-	z_delim=$'\0'
+	z_d_delim=(-d $'\0')
 	z_print0=-print0
 	z_zero_terminated=--zero-terminated
 	z_printarray=Print0Array
 	z_tr_to_z=(tr '\n' '\0')
 else
 	z_supported=false
-	z_delim=$'\n'
+	z_d_delim=()
 	z_print0=-print
 	z_zero_terminated=
 	z_printarray=PrintArray
@@ -643,7 +643,7 @@ function AconfAnalyzeFiles() {
 	local file
 
 	( comm -13 $z_zero_terminated "$tmp_dir"/output-files "$tmp_dir"/system-files ) | \
-		while read -r -d "$z_delim" file
+		while read -r "${z_d_delim[@]}"  file
 		do
 			Log 'Only in system: %s\n' "$(Color C "%q" "$file")"
 			system_only_files+=("$file")
@@ -652,7 +652,7 @@ function AconfAnalyzeFiles() {
 	typeset -ag changed_files=()
 
 	( comm -12 $z_zero_terminated "$tmp_dir"/output-files "$tmp_dir"/system-files ) | \
-		while read -r -d "$z_delim" file
+		while read -r "${z_d_delim[@]}"  file
 		do
 			local type
 			type=$(sudo env LC_ALL=C stat --format=%F "$file")
@@ -671,7 +671,7 @@ function AconfAnalyzeFiles() {
 	typeset -ag config_only_files=()
 
 	( comm -23 $z_zero_terminated "$tmp_dir"/output-files "$tmp_dir"/system-files ) | \
-		while read -r -d "$z_delim" file
+		while read -r "${z_d_delim[@]}"  file
 		do
 			Log 'Only in config: %s\n' "$(Color C "%q" "$file")"
 			config_only_files+=("$file")
