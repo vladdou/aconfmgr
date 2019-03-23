@@ -318,10 +318,11 @@ function AconfApply() {
 		# Delete unknown lost files (files not present in config and belonging to no package)
 
 		LogEnter 'Filtering system-only lost files...\n'
-		tr '\n' '\0' < "$tmp_dir"/managed-files > "$tmp_dir"/managed-files-0
+		"${z_tr_to_z[@]}" < "$tmp_dir"/managed-files > "$tmp_dir"/managed-files-0
+
 		local system_only_lost_files=0
-		comm -13 --zero-terminated "$tmp_dir"/managed-files-0 <(Print0Array system_only_files) | \
-			while read -r -d $'\0' file
+		comm -13 $z_zero_terminated "$tmp_dir"/managed-files-0 <($z_printarray system_only_files) | \
+			while read -r -d "$z_delim" file
 			do
 				files_to_delete+=("$file")
 				system_only_lost_files=$((system_only_lost_files+1))
@@ -332,8 +333,8 @@ function AconfApply() {
 
 		LogEnter 'Filtering system-only managed files...\n'
 		local system_only_managed_files=0
-		comm -12 --zero-terminated "$tmp_dir"/managed-files-0 <(Print0Array system_only_files) | \
-			while read -r -d $'\0' file
+		comm -12 $z_zero_terminated "$tmp_dir"/managed-files-0 <($z_printarray system_only_files) | \
+			while read -r -d "$z_delim" file
 			do
 				files_to_restore+=("$file")
 				system_only_managed_files=$((system_only_managed_files+1))
