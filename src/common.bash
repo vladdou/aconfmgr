@@ -1022,4 +1022,10 @@ then
 	Log '%s: Old coreutils detected, files with newlines will not be handled correctly.\n' "$(Color Y "Warning")"
 fi
 
+if ! ( empty_array=() ; : "${empty_array[@]}" )
+then
+	Log '%s: Old bash detected, disabling unset variable checking.\n' "$(Color Y "Warning")"
+	set +u
+fi
+
 : # include in coverage
