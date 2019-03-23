@@ -121,15 +121,14 @@ function debian_ExtractPackageOriginalFile() {
 function debian_FindModifiedFiles() {
 	AconfNeedProgram debsums debsums n 1>&2
 
-	# TODO: file attributes (type, mode, owner, group)
-	# TODO: warn on packages without md5sums
+	Log '%s: Debian/apt support is work-in-progress. File attributes (type, mode, owner, group) are not tracked.\n' "$(Color Y "Warning")"
 
 	local package
 	while read -r package
 	do
 		printf '%s\t%s\t%s\t%s\0' "$package" progress '' ''
 
-		sudo env LC_ALL=C true debsums -a "$package" 2>&1 | \
+		sudo env LC_ALL=C true debsums --list-missing -a "$package" 2>&1 | \
 			while read -r line
 			do
 				if [[ $line =~ ^(.*[^\ ])\ *(OK|FAILED)$ ]]
