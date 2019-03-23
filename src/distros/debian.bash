@@ -44,7 +44,7 @@ function debian_GetAllPackagesFiles() {
 }
 
 function apt_GetInstalledPackages() {
-	LC_ALL=C dpkg --get-selections | grep -v '\bdeinstall$' | cut -d $'\t' -f 1
+	LC_ALL=C dpkg --get-selections | grep -v '\bdeinstall$' | cut -d $'\t' -f 1 | cut -d : -f 1
 }
 
 function apt_GetExplicitlyInstalledPackages() {
@@ -58,11 +58,11 @@ function debian_GetPackageOwningFile() {
 }
 
 function debian_HaveOrphanPackages() {
-	FatalError 'TODO\n'
+	LC_ALL=C apt-get -qs autoremove | grep -q 'The following packages will be REMOVED:'
 }
 
 function debian_PruneOrphanPackages() {
-	FatalError 'TODO\n'
+	sudo env LC_ALL=C apt-get autoremove
 }
 
 function debian_UnpinPackages() {
@@ -156,11 +156,10 @@ function debian_FindModifiedFiles() {
 function apt_Apply_InstallPackages() {
 	local packages=("$@")
 
-	# function Details() { Log 'Installing the following native packages:%s\n' "$(Color M " %q" "${packages[@]}")" ; }
-	# ParanoidConfirm Details
+	function Details() { Log 'Installing the following packages:%s\n' "$(Color M " %q" "${packages[@]}")" ; }
+	Confirm Details
 
-	# apt_InstallPackages "${packages[@]}"
-	FatalError 'TODO\n'
+	apt_InstallPackages "${packages[@]}"
 }
 
 : # include in coverage
